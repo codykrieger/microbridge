@@ -25,7 +25,13 @@ type Enclosure struct {
 type Term struct {
 	ID   string `xml:"term_id"`
 	Name string `xml:"name"`
-	Slug string `xml:"slug"`
+	// Slug        string `xml:"slug"`
+	// Group       string `xml:"term_group"`
+	// TaxonomyID  string `xml:"term_taxonomy_id"`
+	Taxonomy string `xml:"taxonomy"`
+	// Description string `xml:"description"`
+	// Parent      string `xml:"parent"`
+	// Count       int    `xml:"count"`
 }
 
 type PostThumbnail struct {
@@ -69,10 +75,10 @@ type Post struct {
 }
 
 type Tag struct {
-	ID    int    `xml:"tag_id"`
-	Name  string `xml:"name"`
-	Slug  string `xml:"slug"`
-	Count int    `xml:"count"`
+	ID   int    `xml:"tag_id"`
+	Name string `xml:"name"`
+	// Slug  string `xml:"slug"`
+	// Count int    `xml:"count"`
 }
 
 type User struct {

@@ -157,7 +157,10 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 				Sticky:        false,
 				// PostThumbnail:   PostThumbnail{},
 
-				Terms:        []Term{},
+				Terms: []Term{
+					Term{ID: "1", Name: "footag", Taxonomy: "post_tag"},
+					Term{ID: "2", Name: "foo", Taxonomy: "category"},
+				},
 				CustomFields: []CustomField{},
 			},
 		}
@@ -183,22 +186,14 @@ func (s *WPService) GetTags(req *http.Request, args *GetTagsArgs, reply *GetTags
 	}).Info("---> wp.GetTags")
 
 	reply.Tags = []Tag{
-		// Tag{
-		//     ID:      1,
-		//     Name:    "Tag A!",
-		//     Slug:    "tag-a",
-		//     Count:   0,
-		//     HTMLURL: "http://localhost:4567/tags/tag-a",
-		//     RSSURL:  "http://localhost:4567/tags/tag-a",
-		// },
-		// Tag{
-		//     ID:      2,
-		//     Name:    "Tag B!",
-		//     Slug:    "tag-b",
-		//     Count:   0,
-		//     HTMLURL: "http://localhost:4567/tags/tag-b",
-		//     RSSURL:  "http://localhost:4567/tags/tag-b",
-		// },
+		Tag{
+			ID:   1,
+			Name: "footag",
+		},
+		Tag{
+			ID:   2,
+			Name: "bartag",
+		},
 	}
 
 	return nil
