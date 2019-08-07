@@ -59,18 +59,21 @@ func (s *WPService) GetCategories(req *http.Request, args *GetCategoriesArgs, re
 	}).Info("---> wp.GetCategories")
 
 	reply.Categories = []Category{
-		// Category{
-		//     CategoryID:          "1",
-		//     Name:                "foo(1)",
-		//     Description:         "foo desc",
-		//     CategoryDescription: "foo(2)",
-		// },
-		// Category{
-		//     CategoryID:          "2",
-		//     Name:                "bar(1)",
-		//     Description:         "bar desc",
-		//     CategoryDescription: "bar(2)",
-		// },
+		Category{
+			CategoryID: "1",
+			ParentID:   "0",
+			Name:       "foo",
+		},
+		Category{
+			CategoryID: "2",
+			ParentID:   "0",
+			Name:       "bar",
+		},
+		Category{
+			CategoryID: "3",
+			ParentID:   "2",
+			Name:       "baz",
+		},
 	}
 
 	return nil

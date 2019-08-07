@@ -5,11 +5,9 @@ import (
 )
 
 type Category struct {
-	CategoryID          string `xml:"categoryId"`
-	ParentID            string `xml:"parentId"`
-	Name                string `xml:"categoryName"`
-	Description         string `xml:"description"`
-	CategoryDescription string `xml:"categoryDescription"`
+	CategoryID string `xml:"categoryId"`
+	ParentID   string `xml:"parentId"`
+	Name       string `xml:"categoryName"`
 }
 
 type CustomField struct {
