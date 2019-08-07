@@ -41,7 +41,7 @@ type PostThumbnail struct {
 type Post struct {
 	PostID        string    `xml:"post_id"`
 	Title         string    `xml:"post_title"`
-	DateCreated   time.Time `xml:"post_date"`
+	Date          time.Time `xml:"post_date"`
 	DateModified  time.Time `xml:"post_modified"`
 	Status        string    `xml:"post_status"`
 	Type          string    `xml:"post_type"`

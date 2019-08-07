@@ -113,7 +113,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 			Post{
 				PostID:        "1",
 				Title:         "Title!",
-				DateCreated:   now,
+				Date:          now,
 				DateModified:  now,
 				Status:        "publish",
 				Type:          "post",
@@ -137,7 +137,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 			Post{
 				PostID:        "2",
 				Title:         "Title 2!!",
-				DateCreated:   now,
+				Date:          now,
 				DateModified:  now,
 				Status:        "draft",
 				Type:          "post",
