@@ -7,7 +7,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type WPService struct{}
+type WPService struct {
+	config *Config
+}
 
 type GetUsersArgs struct {
 	BlogID   string

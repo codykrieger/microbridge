@@ -15,10 +15,50 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type Config struct {
+	BlogURL  string
+	PostsURL string
+
+	Endpoint string
+	Username string
+	// Token    string
+}
+
+var config = &Config{}
+
+func init() {
+	config.BlogURL = os.Getenv("BLOG_URL")
+	if config.BlogURL == "" {
+		// panic("BLOG_URL environment variable must be set")
+		config.BlogURL = "https://cjk.micro.blog"
+	}
+
+	config.PostsURL = os.Getenv("POSTS_URL")
+	if config.PostsURL == "" {
+		config.PostsURL = config.BlogURL + "/posts"
+	}
+
+	config.Endpoint = os.Getenv("API_ENDPOINT")
+	if config.Endpoint == "" {
+		config.Endpoint = "https://micro.blog/micropub"
+	}
+
+	config.Username = os.Getenv("API_USER")
+	if config.Username == "" {
+		config.Username = "you"
+	}
+
+	// config.Token = os.Getenv("API_TOKEN")
+	// if config.Token == "" {
+	//     // panic("API_TOKEN environment variable must be set")
+	//     config.Token = "XXXXXXXXXXXXXXXXXXXX"
+	// }
+}
+
 func main() {
 	router := mux.NewRouter()
 
-	srv := &WPService{}
+	srv := &WPService{config: config}
 
 	codec := xmlrpc.NewCodec()
 	codec.AutoCapitalizeMethodName = true
