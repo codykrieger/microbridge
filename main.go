@@ -90,13 +90,22 @@ func logHandler(next http.Handler) http.Handler {
 
 		d := time.Since(t)
 
-		log.WithFields(log.Fields{
+		msg := req.Method + " " + req.RequestURI
+		l := log.WithFields(log.Fields{
 			"code":   lrw.status,
 			"sz":     req.ContentLength,
 			"respsz": lrw.size,
 			"d":      d,
 			"ct":     req.Header.Get("content-type"),
 			"ua":     req.Header.Get("user-agent"),
-		}).Info(req.Method + " " + req.RequestURI)
+		})
+
+		if lrw.status >= 200 && lrw.status < 300 {
+			l.Info(msg)
+		} else if lrw.status >= 300 && lrw.status < 400 {
+			l.Warn(msg)
+		} else {
+			l.Error(msg)
+		}
 	})
 }
