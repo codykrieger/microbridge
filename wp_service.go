@@ -34,15 +34,8 @@ func (s *WPService) GetUsers(req *http.Request, args *GetUsersArgs, reply *GetUs
 	reply.Users = []User{
 		User{
 			UserID:      "1",
-			Username:    "cjk",
-			FirstName:   "Cody",
-			LastName:    "Krieger",
-			Bio:         "",
-			Email:       "cody@krieger.io",
-			Nickname:    "cody-nickname",
-			Nicename:    "cody-nicename",
-			URL:         "http://localhost:4567/users/cjk",
-			DisplayName: "cody-displayname",
+			Username:    s.config.Username,
+			DisplayName: s.config.Username,
 		},
 	}
 
@@ -128,7 +121,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 				Content:       "content one!",
 				Parent:        "0",
 				MIMEType:      "text/plain",
-				Link:          "http://localhost:4567/posts/title",
+				Link:          s.config.PostsURL + "/title",
 				GUID:          "b87c926c-377a-4a73-9609-fa1edd1f891e",
 				MenuOrder:     0,
 				CommentStatus: "closed",
@@ -153,7 +146,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 				Content:       "content two!",
 				Parent:        "0",
 				MIMEType:      "text/plain",
-				Link:          "http://localhost:4567/posts/title-2",
+				Link:          s.config.PostsURL + "/title-2",
 				GUID:          "cb146c10-0294-4dc4-a578-84dd1b98d3c0",
 				MenuOrder:     0,
 				CommentStatus: "closed",

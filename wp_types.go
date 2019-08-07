@@ -10,8 +10,6 @@ type Category struct {
 	Name                string `xml:"categoryName"`
 	Description         string `xml:"description"`
 	CategoryDescription string `xml:"categoryDescription"`
-	HTMLURL             string `xml:"htmlUrl"`
-	RSSURL              string `xml:"rssUrl"`
 }
 
 type CustomField struct {
@@ -73,12 +71,10 @@ type Post struct {
 }
 
 type Tag struct {
-	ID      int    `xml:"tag_id"`
-	Name    string `xml:"name"`
-	Slug    string `xml:"slug"`
-	Count   int    `xml:"count"`
-	HTMLURL string `xml:"html_url"`
-	RSSURL  string `xml:"rss_url"`
+	ID    int    `xml:"tag_id"`
+	Name  string `xml:"name"`
+	Slug  string `xml:"slug"`
+	Count int    `xml:"count"`
 }
 
 type User struct {
