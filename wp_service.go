@@ -191,8 +191,10 @@ func (s *WPService) EditPost(req *http.Request, args *EditPostArgs, reply *EditP
 	// args.Content.Status
 	// args.Content.Content
 	// args.Content.Date
-	// args.Content.Name
-	// args.Content.Terms
+	// args.Content.Terms (categories)
+	// args.Content.TermsNames (tags)
+	// args.Content.Name (?)
+	// args.Content.Enclosure (optional; don't need this yet)
 
 	reply.Success = true
 
@@ -215,6 +217,15 @@ func (s *WPService) NewPost(req *http.Request, args *NewPostArgs, reply *NewPost
 		"bid": args.BlogID,
 		"u":   args.Username,
 	}).Info("---> wp.NewPost")
+
+	// args.Content.Title
+	// args.Content.Status
+	// args.Content.Content
+	// args.Content.Date (optional, apparently)
+	// args.Content.Terms (categories)
+	// args.Content.TermsNames (tags)
+	// args.Content.Name (?)
+	// args.Content.Enclosure (optional; don't need this yet)
 
 	reply.PostID = "999"
 
