@@ -49,7 +49,6 @@ type Post struct {
 	Password      string    `xml:"post_password"`
 	Name          string    `xml:"post_name"` // note: url-safe slug
 	Author        string    `xml:"post_author"`
-	Excerpt       string    `xml:"post_excerpt"`
 	Content       string    `xml:"post_content"`
 	Parent        string    `xml:"post_parent"`
 	MIMEType      string    `xml:"post_mime_type"`
