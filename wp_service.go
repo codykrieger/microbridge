@@ -80,6 +80,32 @@ func (s *WPService) GetCategories(req *http.Request, args *GetCategoriesArgs, re
 	return nil
 }
 
+type NewCategoryArgs struct {
+	BlogID   string
+	Username string
+	Password string
+	Category struct {
+		Name string `xml:"name"`
+	}
+}
+
+type NewCategoryReply struct {
+	CategoryID int
+}
+
+func (s *WPService) NewCategory(req *http.Request, args *NewCategoryArgs, reply *NewCategoryReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+	}).Info("---> wp.NewCategory")
+
+	// args.Category.Name
+
+	reply.CategoryID = 999
+
+	return nil
+}
+
 type GetPostsArgs struct {
 	BlogID   string
 	Username string
