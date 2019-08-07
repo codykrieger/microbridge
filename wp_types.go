@@ -23,15 +23,9 @@ type Enclosure struct {
 }
 
 type Term struct {
-	ID   string `xml:"term_id"`
-	Name string `xml:"name"`
-	// Slug        string `xml:"slug"`
-	// Group       string `xml:"term_group"`
-	// TaxonomyID  string `xml:"term_taxonomy_id"`
+	ID       string `xml:"term_id"`
+	Name     string `xml:"name"`
 	Taxonomy string `xml:"taxonomy"`
-	// Description string `xml:"description"`
-	// Parent      string `xml:"parent"`
-	// Count       int    `xml:"count"`
 }
 
 type PostThumbnail struct {
@@ -45,28 +39,26 @@ type PostThumbnail struct {
 }
 
 type Post struct {
-	PostID      string    `xml:"post_id"`
-	Title       string    `xml:"post_title"`
-	DateCreated time.Time `xml:"post_date"`
-	// DateCreatedGMT  time.Time      `xml:"post_date_gmt"`
-	DateModified time.Time `xml:"post_modified"`
-	// DateModifiedGMT time.Time      `xml:"post_modified_gmt"`
-	Status        string `xml:"post_status"`
-	Type          string `xml:"post_type"`
-	Format        string `xml:"post_format"`
-	Password      string `xml:"post_password"`
-	Name          string `xml:"post_name"` // note: url-safe slug
-	Author        string `xml:"post_author"`
-	Excerpt       string `xml:"post_excerpt"`
-	Content       string `xml:"post_content"`
-	Parent        string `xml:"post_parent"`
-	MIMEType      string `xml:"post_mime_type"`
-	Link          string `xml:"link"`
-	GUID          string `xml:"guid"`
-	MenuOrder     int    `xml:"menu_order"`
-	CommentStatus string `xml:"comment_status"`
-	PingStatus    string `xml:"ping_status"`
-	Sticky        bool   `xml:"sticky"`
+	PostID        string    `xml:"post_id"`
+	Title         string    `xml:"post_title"`
+	DateCreated   time.Time `xml:"post_date"`
+	DateModified  time.Time `xml:"post_modified"`
+	Status        string    `xml:"post_status"`
+	Type          string    `xml:"post_type"`
+	Format        string    `xml:"post_format"`
+	Password      string    `xml:"post_password"`
+	Name          string    `xml:"post_name"` // note: url-safe slug
+	Author        string    `xml:"post_author"`
+	Excerpt       string    `xml:"post_excerpt"`
+	Content       string    `xml:"post_content"`
+	Parent        string    `xml:"post_parent"`
+	MIMEType      string    `xml:"post_mime_type"`
+	Link          string    `xml:"link"`
+	GUID          string    `xml:"guid"`
+	MenuOrder     int       `xml:"menu_order"`
+	CommentStatus string    `xml:"comment_status"`
+	PingStatus    string    `xml:"ping_status"`
+	Sticky        bool      `xml:"sticky"`
 	// PostThumbnail PostThumbnail `xml:"post_thumbnail"`
 
 	Terms        []Term        `xml:"terms"`
@@ -77,8 +69,6 @@ type Post struct {
 type Tag struct {
 	ID   int    `xml:"tag_id"`
 	Name string `xml:"name"`
-	// Slug  string `xml:"slug"`
-	// Count int    `xml:"count"`
 }
 
 type User struct {
