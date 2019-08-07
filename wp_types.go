@@ -82,15 +82,7 @@ type Tag struct {
 }
 
 type User struct {
-	UserID      string    `xml:"user_id"`
-	Username    string    `xml:"username"`
-	FirstName   string    `xml:"first_name"`
-	LastName    string    `xml:"last_name"`
-	Bio         string    `xml:"bio"`
-	Email       string    `xml:"email"`
-	Nickname    string    `xml:"nickname"`
-	Nicename    string    `xml:"nicename"`
-	URL         string    `xml:"url"`
-	DisplayName string    `xml:"display_name"`
-	Registered  time.Time `xml:"registered"`
+	UserID      string `xml:"user_id"`
+	Username    string `xml:"username"`
+	DisplayName string `xml:"display_name"`
 }
