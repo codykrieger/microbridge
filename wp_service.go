@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -165,6 +166,61 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 	}
 
 	return nil
+}
+
+type EditPostArgs struct {
+	BlogID   string
+	Username string
+	Password string
+	PostID   string
+	Content  Post
+}
+
+type EditPostReply struct {
+	Success bool
+}
+
+func (s *WPService) EditPost(req *http.Request, args *EditPostArgs, reply *EditPostReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+		"pid": args.PostID,
+	}).Info("---> wp.EditPost")
+
+	// args.Content.Title
+	// args.Content.Status
+	// args.Content.Content
+	// args.Content.Date
+	// args.Content.Name
+	// args.Content.Terms
+
+	reply.Success = true
+
+	return nil
+}
+
+type GetPostArgs struct {
+	BlogID   string
+	Username string
+	Password string
+	PostID   string
+	Fields   []string
+}
+
+type GetPostReply struct {
+	Post Post
+}
+
+func (s *WPService) GetPost(req *http.Request, args *GetPostArgs, reply *GetPostReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+		"pid": args.PostID,
+	}).Info("---> wp.EditPost")
+
+	// FIXME: Huh. Well, this doesn't seem to result in an error being returned to the client.
+	// ಠ_ಠ
+	return fmt.Errorf("not implemented")
 }
 
 type GetTagsArgs struct {
