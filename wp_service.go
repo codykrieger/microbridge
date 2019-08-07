@@ -199,6 +199,28 @@ func (s *WPService) EditPost(req *http.Request, args *EditPostArgs, reply *EditP
 	return nil
 }
 
+type NewPostArgs struct {
+	BlogID   string
+	Username string
+	Password string
+	Content  Post
+}
+
+type NewPostReply struct {
+	PostID string
+}
+
+func (s *WPService) NewPost(req *http.Request, args *NewPostArgs, reply *NewPostReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+	}).Info("---> wp.NewPost")
+
+	reply.PostID = "999"
+
+	return nil
+}
+
 type GetPostArgs struct {
 	BlogID   string
 	Username string
@@ -216,7 +238,7 @@ func (s *WPService) GetPost(req *http.Request, args *GetPostArgs, reply *GetPost
 		"bid": args.BlogID,
 		"u":   args.Username,
 		"pid": args.PostID,
-	}).Info("---> wp.EditPost")
+	}).Info("---> wp.GetPost")
 
 	// FIXME: Huh. Well, this doesn't seem to result in an error being returned to the client.
 	// ಠ_ಠ
