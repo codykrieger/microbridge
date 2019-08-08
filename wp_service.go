@@ -130,7 +130,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 		"bid":    args.BlogID,
 		"u":      args.Username,
 		"filter": args.Filter,
-		"Fields": args.Fields,
+		"fields": args.Fields,
 	}).Info("---> wp.GetPosts")
 
 	if args.Filter.PostType == "post" {

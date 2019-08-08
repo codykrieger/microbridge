@@ -134,7 +134,6 @@ func marshalReplyParams(value *reflect.Value) (string, error) {
 }
 
 func marshalReplyParam(value *reflect.Value) (string, error) {
-	log.Infof("marshalling reply value of kind %v", value.Kind())
 	switch value.Kind() {
 	case reflect.String:
 		// FIXME: This needs to be escaped.
@@ -167,7 +166,7 @@ func marshalReplyParam(value *reflect.Value) (string, error) {
 		}
 		return fmt.Sprintf("<array><data>%s</data></array>", buf), nil
 	case reflect.Struct:
-		if reflect.TypeOf(value).String() == "time.Time" {
+		if reflect.TypeOf(value.Interface()).String() == "time.Time" {
 			t := value.Interface().(time.Time)
 			return fmt.Sprintf(
 				"<dateTime.iso8601>%04d%02d%02dT%02d:%02d:%02d</dateTime.iso8601>",
@@ -224,9 +223,7 @@ func mapValueToField(value interface{}, field *reflect.Value) error {
 			for j := 0; j < fieldType.NumField(); j++ {
 				structField := fieldType.Field(j)
 				xmlTag := structField.Tag.Get("xml")
-				log.Infof("checking struct field '%s' (tag: '%s') against '%s'...", structField.Name, xmlTag, member.Name)
 				if xmlTag == member.Name || strings.Title(member.Name) == structField.Name {
-					log.Info("yay struct field name match!")
 					targetField := field.FieldByName(structField.Name)
 					if err := mapValueToField(member.Value.Value, &targetField); err != nil {
 						return err
