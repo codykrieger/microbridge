@@ -84,14 +84,6 @@ func (v *XMLRPCValue) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 			if el == start.End() {
 				return nil
 			}
-			// case xml.CharData:
-			//     log.Infof("chardata: %v", el)
-			// case xml.Comment:
-			//     log.Infof("comment: %v", el)
-			// case xml.ProcInst:
-			//     log.Infof("procinst: %v", el)
-			// case xml.Directive:
-			//     log.Infof("directive: %v", el)
 		}
 	}
 	return nil
