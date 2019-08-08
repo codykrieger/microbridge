@@ -42,11 +42,13 @@ func (v *XMLRPCValue) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		case xml.StartElement:
 			switch el.Name.Local {
 			case "array":
-				var s []XMLRPCValue
-				if err := d.DecodeElement(&s, &el); err != nil {
+				var a struct {
+					Items []XMLRPCValue `xml:"data>value"`
+				}
+				if err := d.DecodeElement(&a, &el); err != nil {
 					return err
 				}
-				v.Value = s
+				v.Value = a.Items
 			case "struct":
 				var s XMLRPCStruct
 				if err := d.DecodeElement(&s, &el); err != nil {
