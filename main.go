@@ -60,6 +60,8 @@ func main() {
 	rs.RegisterCodec(codec, "text/xml")
 	rs.RegisterService(srv, "wp")
 
+	router.HandleFunc("/", handleIndex).Methods(http.MethodGet)
+	router.HandleFunc("/xmlrpc.php", handleRsd)
 	router.Handle("/xmlrpc", rs).Methods(http.MethodPost)
 
 	port := os.Getenv("PORT")
@@ -141,4 +143,36 @@ func logHandler(next http.Handler) http.Handler {
 			l.Error(msg)
 		}
 	})
+}
+
+func handleIndex(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte(`<!DOCTYPE html>
+<html>
+<head>
+	<title>sup</title>
+	<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://localhost:4567/xmlrpc.php?rsd" />
+</head>
+<body>
+	<h1>nothing to see here...</h1>
+	<p>move along</p>
+</body>
+</html>`))
+}
+
+func handleRsd(w http.ResponseWriter, req *http.Request) {
+	if req.URL.RawQuery == "rsd" {
+		w.Header().Set("Content-Type", "text/xml; charset=utf-8")
+		w.Write([]byte(`<rsd xmlns="http://archipelago.phrasewise.com/rsd" version="1.0">
+<service>
+	<engineName>WordPress</engineName>
+	<engineLink>https://wordpress.org/</engineLink>
+	<homePageLink>` + config.BlogURL + `</homePageLink>
+	<apis>
+		<api name="WordPress" blogID="1" preferred="true" apiLink="http://localhost:4567/xmlrpc"/>
+	</apis>
+	</service>
+</rsd>`))
+	} else {
+		w.WriteHeader(http.StatusNotImplemented)
+	}
 }
