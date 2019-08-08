@@ -8,10 +8,10 @@ import (
 	"os"
 	"time"
 
-	xmlrpc "github.com/codykrieger/gorilla-xmlrpc/xml"
+	"github.com/codykrieger/microbridge/xmlrpc"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/rpc"
+	rpc "github.com/gorilla/rpc/v2"
 	log "github.com/sirupsen/logrus"
 )
 
