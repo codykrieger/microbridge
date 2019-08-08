@@ -21,7 +21,6 @@ type Config struct {
 
 	Endpoint string
 	Username string
-	// Token    string
 }
 
 var config = &Config{}
@@ -47,12 +46,6 @@ func init() {
 	if config.Username == "" {
 		config.Username = "you"
 	}
-
-	// config.Token = os.Getenv("API_TOKEN")
-	// if config.Token == "" {
-	//     // panic("API_TOKEN environment variable must be set")
-	//     config.Token = "XXXXXXXXXXXXXXXXXXXX"
-	// }
 }
 
 func main() {
