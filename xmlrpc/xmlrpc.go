@@ -162,7 +162,7 @@ func marshalReplyParam(value *reflect.Value) (string, error) {
 				return "", err
 			}
 
-			buf += itemXML
+			buf += "<value>" + itemXML + "</value>"
 		}
 		return fmt.Sprintf("<array><data>%s</data></array>", buf), nil
 	case reflect.Struct:
