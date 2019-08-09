@@ -26,10 +26,6 @@ func (s *WPService) checkAuth(username, password string) error {
 	}
 
 	if len(config.Destination) == 0 {
-		// FIXME: Micro.blog almost exclusively returns 200 OK, even when the
-		// bearer token is flat-out wrong. So we use the presence of a
-		// Destination in the config object to determine whether the included
-		// bearer token successfully authenticated the client.
 		log.Error("micropub config contains no destinations; assuming authentication failure")
 		return xmlrpc.ErrForbidden
 	}
@@ -222,7 +218,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 		}
 
 		dateString := v.Properties.Published[0]
-		date, err := time.Parse(time.RFC3339, dateString) //"2006-01-02T15:04:05-07:00", dateString)
+		date, err := time.Parse(time.RFC3339, dateString)
 		if err != nil {
 			return err
 		}
