@@ -1,6 +1,7 @@
 package xmlrpc
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -180,8 +181,11 @@ func marshalReplyParams(value *reflect.Value) (string, error) {
 func marshalReplyParam(value *reflect.Value) (string, error) {
 	switch value.Kind() {
 	case reflect.String:
-		// FIXME: This needs to be escaped.
-		return fmt.Sprintf("<string>%s</string>", value.String()), nil
+		var buf bytes.Buffer
+		if err := xml.EscapeText(&buf, []byte(value.String())); err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("<string>%s</string>", buf.String()), nil
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
