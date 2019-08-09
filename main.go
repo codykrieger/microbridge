@@ -59,6 +59,7 @@ func main() {
 	rs := rpc.NewServer()
 	rs.RegisterCodec(codec, "text/xml")
 	rs.RegisterService(srv, "wp")
+	rs.RegisterService(srv, "metaWeblog")
 
 	router.HandleFunc("/", handleIndex).Methods(http.MethodGet)
 	router.HandleFunc("/xmlrpc.php", handleRsd)

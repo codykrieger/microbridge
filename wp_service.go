@@ -339,3 +339,28 @@ func (s *WPService) GetTags(req *http.Request, args *GetTagsArgs, reply *GetTags
 
 	return nil
 }
+
+type NewMediaObjectArgs struct {
+	BlogID   string
+	Username string
+	Password string
+	Object   struct {
+		Name string `xml:"name"`
+		Bits string `xml:"bits"`
+		Type string `xml:"type"`
+	}
+}
+
+type NewMediaObjectReply struct {
+}
+
+func (s *WPService) NewMediaObject(req *http.Request, args *NewMediaObjectArgs, reply *NewMediaObjectReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+	}).Info("---> metaWeblog.newMediaObject")
+
+	log.Infof("object: %s; type: %s", args.Object.Name, args.Object.Type)
+
+	return nil
+}
