@@ -2,7 +2,6 @@ package micropub
 
 import (
 	"encoding/json"
-	// "fmt"
 	"net/http"
 	"time"
 
