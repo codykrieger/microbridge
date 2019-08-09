@@ -16,20 +16,24 @@ import (
 )
 
 type Config struct {
+	Port     string
 	BlogURL  string
 	PostsURL string
 
-	Endpoint string
-	Username string
+	MicropubEndpoint string
 }
 
 var config = &Config{}
 
 func init() {
+	config.Port = os.Getenv("PORT")
+	if config.Port == "" {
+		config.Port = "4567"
+	}
+
 	config.BlogURL = os.Getenv("BLOG_URL")
 	if config.BlogURL == "" {
-		// panic("BLOG_URL environment variable must be set")
-		config.BlogURL = "https://cjk.micro.blog"
+		config.BlogURL = "http://localhost:" + config.Port
 	}
 
 	config.PostsURL = os.Getenv("POSTS_URL")
@@ -37,14 +41,9 @@ func init() {
 		config.PostsURL = config.BlogURL + "/posts"
 	}
 
-	config.Endpoint = os.Getenv("API_ENDPOINT")
-	if config.Endpoint == "" {
-		config.Endpoint = "https://micro.blog/micropub"
-	}
-
-	config.Username = os.Getenv("API_USER")
-	if config.Username == "" {
-		config.Username = "you"
+	config.MicropubEndpoint = os.Getenv("MICROPUB_ENDPOINT")
+	if config.MicropubEndpoint == "" {
+		config.MicropubEndpoint = "https://micro.blog/micropub"
 	}
 }
 
@@ -65,17 +64,11 @@ func main() {
 	router.HandleFunc("/xmlrpc.php", handleRsd)
 	router.Handle("/xmlrpc", rs).Methods(http.MethodPost)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "4567"
-	}
-
-	addr := ":" + port
-
 	handler := logHandler(
 		handlers.RecoveryHandler()(router),
 	)
 
+	addr := ":" + config.Port
 	log.WithField("addr", addr).Info("listening...")
 
 	if err := http.ListenAndServe(addr, handler); err != nil {
