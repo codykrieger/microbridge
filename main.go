@@ -113,14 +113,6 @@ func logHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		t := time.Now()
 
-		// if buf, err := ioutil.ReadAll(req.Body); err != nil {
-		//     http.Error(w, err.Error(), http.StatusInternalServerError)
-		//     return
-		// } else {
-		//     fmt.Fprintf(os.Stderr, "\n\033[33mbody: %s\033[0m\n\n", ioutil.NopCloser(bytes.NewBuffer(buf)))
-		//     req.Body = ioutil.NopCloser(bytes.NewBuffer(buf))
-		// }
-
 		lrw := &loggingResponseWriter{w: w, status: http.StatusOK}
 		next.ServeHTTP(lrw, req)
 
