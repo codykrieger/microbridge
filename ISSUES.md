@@ -2,8 +2,8 @@
 
 ## Micro.blog support for Micropub
 
-Micro.blog's support for Micropub has a number of limitations, which make this
-bridge less functional than I'd like it to be. Broken down by action:
+Below are issues I've encountered when working with Micro.blog's Micropub API
+implementation.
 
 ### authentication
 
@@ -27,9 +27,3 @@ bridge less functional than I'd like it to be. Broken down by action:
 - Item URLs always seem to be prefixed with `http://` rather than `https://` as
   I'd expect, given that `config.destination[0].uid` correctly specifies
   `https://`.
-
-### editing items
-
-- The `url` property of items is fixed and does not respond to updates, making
-  it impossible to change the permalink/slug of a post after it has been
-  created.
