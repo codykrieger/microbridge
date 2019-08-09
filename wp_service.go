@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/codykrieger/microbridge/xmlrpc"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,6 +32,10 @@ func (s *WPService) GetUsers(req *http.Request, args *GetUsersArgs, reply *GetUs
 		"u":      args.Username,
 		"filter": args.Filter,
 	}).Info("---> wp.GetUsers")
+
+	if args.Username == "" || args.Password == "" {
+		return xmlrpc.ErrForbidden
+	}
 
 	reply.Users = []User{
 		User{
