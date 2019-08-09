@@ -13,6 +13,38 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type FaultError struct {
+	StatusCode int
+	Text       string
+}
+
+func (e *FaultError) Error() string {
+	return fmt.Sprintf("%d %s", e.StatusCode, e.Text)
+}
+
+func (e *FaultError) XML() string {
+	return fmt.Sprintf(`<methodResponse>
+    <fault>
+        <value>
+            <struct>
+                <member>
+                    <name>faultCode</name>
+                    <value><int>%d</int></value>
+                </member>
+                <member>
+                    <name>faultString</name>
+                    <value><string>%s</string></value>
+                </member>
+            </struct>
+        </value>
+    </fault>
+</methodResponse>`, e.StatusCode, e.Text)
+}
+
+var (
+	ErrForbidden = &FaultError{StatusCode: http.StatusForbidden, Text: "forbidden"}
+)
+
 type Codec struct {
 	AutoCapitalizeMethodName bool
 }
@@ -99,6 +131,18 @@ func (c *CodecRequest) WriteResponse(w http.ResponseWriter, reply interface{}) {
 }
 
 func (c *CodecRequest) WriteError(w http.ResponseWriter, status int, err error) {
+	if fault, ok := err.(*FaultError); ok {
+		status = fault.StatusCode
+
+		log.WithError(fault).Errorf("xmlrpc fault")
+
+		w.WriteHeader(status)
+		w.Header().Set("Content-Type", "text/xml; charset=utf-8")
+		fmt.Fprintf(w, fault.XML())
+
+		return
+	}
+
 	log.WithField("code", status).Errorf("write error: %s", err.Error())
 	http.Error(w, http.StatusText(status), status)
 }
