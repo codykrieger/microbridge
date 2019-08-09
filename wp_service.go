@@ -48,6 +48,29 @@ func (s *WPService) GetUsers(req *http.Request, args *GetUsersArgs, reply *GetUs
 	return nil
 }
 
+type GetAuthorsArgs struct {
+	BlogID   string
+	Username string
+	Password string
+}
+
+type GetAuthorsReply struct {
+	Users []User
+}
+
+func (s *WPService) GetAuthors(req *http.Request, args *GetAuthorsArgs, reply *GetAuthorsReply) error {
+	log.WithFields(log.Fields{
+		"bid": args.BlogID,
+		"u":   args.Username,
+	}).Info("---> wp.GetAuthors")
+
+	if args.Username == "" || args.Password == "" {
+		return xmlrpc.ErrForbidden
+	}
+
+	return nil
+}
+
 type GetCategoriesArgs struct {
 	BlogID   string
 	Username string
