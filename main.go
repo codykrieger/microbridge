@@ -147,33 +147,34 @@ func logHandler(next http.Handler) http.Handler {
 }
 
 func handleIndex(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte(`<!DOCTYPE html>
+	fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
 <head>
 	<title>sup</title>
-	<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://localhost:4567/xmlrpc.php?rsd" />
+	<link rel="EditURI" type="application/rsd+xml" title="RSD" href="%s/xmlrpc.php?rsd" />
 </head>
 <body>
 	<h1>nothing to see here...</h1>
 	<p>move along</p>
 </body>
-</html>`))
+</html>`, config.BlogURL)
 }
 
 func handleRsd(w http.ResponseWriter, req *http.Request) {
-	if req.URL.RawQuery == "rsd" {
-		w.Header().Set("Content-Type", "text/xml; charset=utf-8")
-		w.Write([]byte(`<rsd xmlns="http://archipelago.phrasewise.com/rsd" version="1.0">
+	if req.URL.RawQuery != "rsd" {
+		w.WriteHeader(http.StatusNotImplemented)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/xml; charset=utf-8")
+	fmt.Fprintf(w, `<rsd xmlns="http://archipelago.phrasewise.com/rsd" version="1.0">
 <service>
 	<engineName>WordPress</engineName>
 	<engineLink>https://wordpress.org/</engineLink>
-	<homePageLink>` + config.BlogURL + `</homePageLink>
+	<homePageLink>%s</homePageLink>
 	<apis>
-		<api name="WordPress" blogID="1" preferred="true" apiLink="http://localhost:4567/xmlrpc"/>
+		<api name="WordPress" blogID="1" preferred="true" apiLink="%s/xmlrpc"/>
 	</apis>
 	</service>
-</rsd>`))
-	} else {
-		w.WriteHeader(http.StatusNotImplemented)
-	}
+</rsd>`, config.BlogURL, config.BlogURL)
 }
