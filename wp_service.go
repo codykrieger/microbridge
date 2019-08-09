@@ -167,7 +167,7 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 		reply.Posts = []Post{
 			Post{
 				PostID:        "1",
-				Title:         "Title!",
+				Title:         "Title & \"Shit\"!",
 				Date:          now,
 				DateModified:  now,
 				Status:        "publish",
