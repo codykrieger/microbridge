@@ -2,6 +2,21 @@
 
 `microbridge` is a WordPress XML-RPC-to-Micropub bridge.
 
+## status
+
+As far as end-to-end XML-RPC-to-Micropub functionality is concerned, at present,
+`microbridge` only fully supports:
+
+- Getting the list of categories
+- Getting the list of posts
+
+WIP/partial/stubbed support is available for:
+
+- Creating posts
+- Editing posts
+- Creating categories
+- Uploading images/media
+
 ## purpose
 
 I use [MarsEdit][marsedit] to create and manage [Micro.blog][microblog] posts.
