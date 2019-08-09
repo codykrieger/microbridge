@@ -43,7 +43,9 @@ func (e *FaultError) XML() string {
 }
 
 var (
-	ErrForbidden = &FaultError{StatusCode: http.StatusForbidden, Text: "forbidden"}
+	ErrForbidden      = &FaultError{StatusCode: http.StatusForbidden, Text: "forbidden"}
+	ErrNotFound       = &FaultError{StatusCode: http.StatusNotFound, Text: "not found"}
+	ErrNotImplemented = &FaultError{StatusCode: http.StatusNotImplemented, Text: "not implemented"}
 )
 
 type Codec struct {
