@@ -3,14 +3,37 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"time"
 
+	"github.com/codykrieger/microbridge/micropub"
 	"github.com/codykrieger/microbridge/xmlrpc"
 	log "github.com/sirupsen/logrus"
 )
 
 type WPService struct {
 	config *Config
+}
+
+func (s *WPService) checkAuth(username, password string) error {
+	if username == "" || password == "" {
+		return xmlrpc.ErrForbidden
+	}
+
+	client := micropub.NewClient(s.config.MicropubEndpoint, password)
+	config, err := client.GetConfig()
+	if err != nil {
+		return err
+	}
+
+	if len(config.Destination) == 0 {
+		// FIXME: Micro.blog almost exclusively returns 200 OK, even when the
+		// bearer token is flat-out wrong. So we use the presence of a
+		// Destination in the config object to determine whether the included
+		// bearer token successfully authenticated the client.
+		log.Error("micropub config contains no destinations; assuming authentication failure")
+		return xmlrpc.ErrForbidden
+	}
+
+	return nil
 }
 
 type GetUsersArgs struct {
@@ -33,15 +56,15 @@ func (s *WPService) GetUsers(req *http.Request, args *GetUsersArgs, reply *GetUs
 		"filter": args.Filter,
 	}).Info("---> wp.GetUsers")
 
-	if args.Username == "" || args.Password == "" {
-		return xmlrpc.ErrForbidden
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
 	}
 
 	reply.Users = []User{
 		User{
 			UserID:      "1",
-			Username:    s.config.Username,
-			DisplayName: s.config.Username,
+			Username:    "You",
+			DisplayName: "You",
 		},
 	}
 
@@ -64,8 +87,8 @@ func (s *WPService) GetAuthors(req *http.Request, args *GetAuthorsArgs, reply *G
 		"u":   args.Username,
 	}).Info("---> wp.GetAuthors")
 
-	if args.Username == "" || args.Password == "" {
-		return xmlrpc.ErrForbidden
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
 	}
 
 	return nil
@@ -87,22 +110,24 @@ func (s *WPService) GetCategories(req *http.Request, args *GetCategoriesArgs, re
 		"u":   args.Username,
 	}).Info("---> wp.GetCategories")
 
-	reply.Categories = []Category{
-		Category{
-			CategoryID: "1",
-			ParentID:   "0",
-			Name:       "foo",
-		},
-		Category{
-			CategoryID: "2",
-			ParentID:   "0",
-			Name:       "bar",
-		},
-		Category{
-			CategoryID: "3",
-			ParentID:   "2",
-			Name:       "baz",
-		},
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
+
+	client := micropub.NewClient(s.config.MicropubEndpoint, args.Password)
+
+	categories, err := client.GetCategories()
+	if err != nil {
+		return err
+	}
+
+	reply.Categories = []Category{}
+
+	for i, v := range categories {
+		reply.Categories = append(reply.Categories, Category{
+			CategoryID: fmt.Sprintf("%d", i),
+			Name:       v,
+		})
 	}
 
 	return nil
@@ -126,6 +151,10 @@ func (s *WPService) NewCategory(req *http.Request, args *NewCategoryArgs, reply 
 		"bid": args.BlogID,
 		"u":   args.Username,
 	}).Info("---> wp.NewCategory")
+
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
 
 	// args.Category.Name
 
@@ -161,62 +190,56 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 		"fields": args.Fields,
 	}).Info("---> wp.GetPosts")
 
-	if args.Filter.PostType == "post" {
-		now := time.Now()
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
 
-		reply.Posts = []Post{
-			Post{
-				PostID:        "1",
-				Title:         "Title & \"Shit\"!",
-				Date:          now,
-				DateModified:  now,
-				Status:        "publish",
-				Type:          "post",
-				Format:        "standard",
-				Name:          "title",
-				Author:        "1",
-				Content:       "content one!",
-				Parent:        "0",
-				MIMEType:      "text/plain",
-				Link:          s.config.PostsURL + "/title",
-				GUID:          "b87c926c-377a-4a73-9609-fa1edd1f891e",
-				MenuOrder:     0,
-				CommentStatus: "closed",
-				PingStatus:    "closed",
-				Sticky:        false,
-				// PostThumbnail:   PostThumbnail{},
+	if args.Filter.PostType != "post" {
+		return nil
+	}
 
-				Terms:        []Term{},
-				CustomFields: []CustomField{},
-			},
-			Post{
-				PostID:        "2",
-				Title:         "Title 2!!",
-				Date:          now,
-				DateModified:  now,
-				Status:        "draft",
-				Type:          "post",
-				Format:        "standard",
-				Name:          "title-2",
-				Author:        "1",
-				Content:       "content two!",
-				Parent:        "0",
-				MIMEType:      "text/plain",
-				Link:          s.config.PostsURL + "/title-2",
-				GUID:          "cb146c10-0294-4dc4-a578-84dd1b98d3c0",
-				MenuOrder:     0,
-				CommentStatus: "closed",
-				PingStatus:    "closed",
-				Sticky:        false,
-				// PostThumbnail:   PostThumbnail{},
+	client := micropub.NewClient(s.config.MicropubEndpoint, args.Password)
 
-				Terms: []Term{
-					Term{ID: "1", Name: "footag", Taxonomy: "post_tag"},
-					Term{ID: "2", Name: "foo", Taxonomy: "category"},
-				},
-				CustomFields: []CustomField{},
-			},
+	posts, err := client.GetPosts()
+	if err != nil {
+		return err
+	}
+
+	reply.Posts = []Post{}
+
+	for _, v := range posts {
+		status := v.Properties.PostStatus[0]
+		wpStatus := ""
+		switch status {
+		case "published":
+			wpStatus = "publish"
+		case "draft":
+			wpStatus = "draft"
+		default:
+			log.Warnf("unknown micropub post status '%s'", status)
+			wpStatus = "publish"
 		}
+
+		reply.Posts = append(reply.Posts, Post{
+			PostID:        fmt.Sprintf("%d", v.Properties.UID[0]),
+			Title:         v.Properties.Name[0],
+			Date:          v.Properties.Published[0],
+			DateModified:  v.Properties.Published[0],
+			Status:        wpStatus,
+			Type:          "post",
+			Format:        "standard",
+			Name:          "",
+			Author:        "1",
+			Content:       v.Properties.Content[0],
+			Parent:        "0",
+			MIMEType:      "text/plain",
+			Link:          v.Properties.URL[0],
+			CommentStatus: "closed",
+			PingStatus:    "closed",
+			Sticky:        false,
+			Terms:         []Term{},
+			CustomFields:  []CustomField{},
+		})
 	}
 
 	return nil
@@ -240,6 +263,10 @@ func (s *WPService) EditPost(req *http.Request, args *EditPostArgs, reply *EditP
 		"u":   args.Username,
 		"pid": args.PostID,
 	}).Info("---> wp.EditPost")
+
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
 
 	// args.Content.Title
 	// args.Content.Status
@@ -271,6 +298,10 @@ func (s *WPService) NewPost(req *http.Request, args *NewPostArgs, reply *NewPost
 		"bid": args.BlogID,
 		"u":   args.Username,
 	}).Info("---> wp.NewPost")
+
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
 
 	// args.Content.Title
 	// args.Content.Status
@@ -305,9 +336,11 @@ func (s *WPService) GetPost(req *http.Request, args *GetPostArgs, reply *GetPost
 		"pid": args.PostID,
 	}).Info("---> wp.GetPost")
 
-	// FIXME: Huh. Well, this doesn't seem to result in an error being returned to the client.
-	// ಠ_ಠ
-	return fmt.Errorf("not implemented")
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
+
+	return xmlrpc.ErrNotImplemented
 }
 
 type GetTagsArgs struct {
@@ -326,15 +359,8 @@ func (s *WPService) GetTags(req *http.Request, args *GetTagsArgs, reply *GetTags
 		"u":   args.Username,
 	}).Info("---> wp.GetTags")
 
-	reply.Tags = []Tag{
-		Tag{
-			ID:   1,
-			Name: "footag",
-		},
-		Tag{
-			ID:   2,
-			Name: "bartag",
-		},
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
 	}
 
 	return nil
@@ -359,6 +385,10 @@ func (s *WPService) NewMediaObject(req *http.Request, args *NewMediaObjectArgs, 
 		"bid": args.BlogID,
 		"u":   args.Username,
 	}).Info("---> metaWeblog.newMediaObject")
+
+	if err := s.checkAuth(args.Username, args.Password); err != nil {
+		return err
+	}
 
 	log.Infof("object: %s; type: %s", args.Object.Name, args.Object.Type)
 
