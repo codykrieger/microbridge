@@ -3,7 +3,6 @@ package micropub
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -19,13 +18,13 @@ func (e *HTTPError) Error() string {
 type Item struct {
 	Type       string `json:"type"`
 	Properties struct {
-		Name       []string    `json:"name"`
-		Content    []string    `json:"content"`
-		Photo      []string    `json:"photo"`
-		PostStatus []string    `json:"post-status"`
-		Published  []time.Time `json:"published"`
-		UID        []uint64    `json:"uid"`
-		URL        []string    `json:"url"`
+		Name       []string `json:"name"`
+		Content    []string `json:"content"`
+		Photo      []string `json:"photo"`
+		PostStatus []string `json:"post-status"`
+		Published  []string `json:"published"`
+		UID        []uint64 `json:"uid"`
+		URL        []string `json:"url"`
 	} `json:"properties"`
 }
 

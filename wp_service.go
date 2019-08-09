@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/codykrieger/microbridge/micropub"
 	"github.com/codykrieger/microbridge/xmlrpc"
@@ -220,11 +221,20 @@ func (s *WPService) GetPosts(req *http.Request, args *GetPostsArgs, reply *GetPo
 			wpStatus = "publish"
 		}
 
+		dateString := v.Properties.Published[0]
+		date, err := time.Parse(time.RFC3339, dateString) //"2006-01-02T15:04:05-07:00", dateString)
+		if err != nil {
+			return err
+		}
+
+		date = date.Local()
+		log.WithField("d", date).Infof("parsed date (%s)", dateString)
+
 		reply.Posts = append(reply.Posts, Post{
 			PostID:        fmt.Sprintf("%d", v.Properties.UID[0]),
 			Title:         v.Properties.Name[0],
-			Date:          v.Properties.Published[0],
-			DateModified:  v.Properties.Published[0],
+			Date:          date,
+			DateModified:  date,
 			Status:        wpStatus,
 			Type:          "post",
 			Format:        "standard",
