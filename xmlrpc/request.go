@@ -1,6 +1,7 @@
 package xmlrpc
 
 import (
+	"encoding/base64"
 	"encoding/xml"
 	"fmt"
 	"time"
@@ -79,6 +80,17 @@ func (v *XMLRPCValue) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 					return err
 				}
 				v.Value = t
+			case "base64":
+				var s string
+				if err := d.DecodeElement(&s, &el); err != nil {
+					return err
+				}
+
+				b, err := base64.StdEncoding.DecodeString(s)
+				if err != nil {
+					return err
+				}
+				v.Value = string(b)
 			default:
 				return fmt.Errorf("unknown XMLRPCValue type '%s'", el.Name.Local)
 			}
